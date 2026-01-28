@@ -26,7 +26,7 @@
     "prettier": "prettier 'src/**/*.js' --write",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
-    "start": "vite --port=3000",
+    "start": "vite --port=8080 --host=0.0.0.0",
     "start:api": "NODE_OPTIONS=--openssl-legacy-provider vercel dev --token=$VERCEL_TOKEN --listen=0.0.0.0:3001 --yes",
     "start:backend": "docker compose up",
     "start:tracker": "bittorrent-tracker",

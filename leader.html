@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <style>
+      span {
+        padding: 2px;
+        margin: 5px;
+        font-family: monospace;
+        font-size: x-large;
+        background-color: rgb(233, 236, 240);
+      }
+
+      .sort {
+        background-color: rgb(176, 186, 221);
+        padding: 2px;
+        border: 1px;
+        margin: 1px;
+      }
+
+      .sort.asc,
+      .sort.desc {
+        background-color: yellow;
+      }
+
+      .money {
+        color: green;
+      }
+
+      .money::before {
+        content: '$';
+      }
+
+      .cows::before {
+        content: '🐄';
+      }
+
+      .exp::before {
+        content: '🏆';
+      }
+
+      .days::before {
+        content: '⌛';
+      }
+
+      .sort.asc::after {
+        content: '\002B06';
+        padding-left: 3px;
+      }
+
+      .sort.desc::after {
+        content: '\002B07';
+        padding-left: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="ldr">
+      <span class="sort" data-sort="name">Name</span>
+      <span class="sort" data-sort="money">Money</span>
+      <span class="sort" data-sort="cows">Cows</span>
+      <span class="sort" data-sort="cows">Days</span>
+      <span class="sort" data-sort="exp">Exp</span>
+
+      <ul class="list"></ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.0.2/list.min.js"></script>
+    <script>
+      var options = {
+        valueNames: ['ename', 'farm', 'money', 'cows', 'days', 'exp'],
+        item:
+          '<li><span class="ename"></span><span class="farm"></span><span class="money"></span><span class="cows"></span><span class="days"></span><span class="exp"></span></li>',
+      }
+      fetch('/leaderboard').then(d =>
+        d.json().then(values => {
+          var hackerList = new List('ldr', options, values)
+        })
+      )
+    </script>
+  </body>
+</html>

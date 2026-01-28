@@ -17,7 +17,7 @@ import '@fontsource/public-sans'
 import { cropFamily, grapeVariety } from './enums.js'
 
 const FarmhandRoute = props => <Farmhand {...{ ...props, features }} />
-
+features['ename'] = ename // inject ename from global variable
 ReactDOM.render(
   <Router
     {...{

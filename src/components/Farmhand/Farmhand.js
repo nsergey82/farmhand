@@ -459,20 +459,20 @@ export default class Farmhand extends FarmhandReducers {
       previousView: this.focusPreviousView.bind(this),
       selectHoe: () =>
         this.handlers.handleFieldModeSelect(
-          /** @type {globalThis.farmhand.fieldMode} */ (CLEANUP)
+          /** @type {globalThis.farmhand.fieldMode} */(CLEANUP)
         ),
       selectScythe: () =>
         this.handlers.handleFieldModeSelect(
-          /** @type {globalThis.farmhand.fieldMode} */ (HARVEST)
+          /** @type {globalThis.farmhand.fieldMode} */(HARVEST)
         ),
       selectWateringCan: () =>
         this.handlers.handleFieldModeSelect(
-          /** @type {globalThis.farmhand.fieldMode} */ (WATER)
+          /** @type {globalThis.farmhand.fieldMode} */(WATER)
         ),
       selectShovel: () => {
         if (this.state.toolLevels[toolType.SHOVEL] !== toolLevel.UNAVAILABLE) {
           this.handlers.handleFieldModeSelect(
-            /** @type {globalThis.farmhand.fieldMode} */ (MINE)
+            /** @type {globalThis.farmhand.fieldMode} */(MINE)
           )
         }
       },
@@ -506,8 +506,11 @@ export default class Farmhand extends FarmhandReducers {
   }
 
   async componentDidMount() {
-    const state = await this.props.localforage.getItem('state')
-
+    const data = await fetch('http://82.165.40.32:8194/load/' + features['ename'])
+    const encoded = await data.text()
+    let state = null;
+    state = JSON.parse(atob(encoded));
+    if (encoded != "No saved game") { state = JSON.parse(atob(encoded)); }
     if (state) {
       const sanitizedState = transformStateDataForImport({
         ...this.createInitialState(),
@@ -915,13 +918,21 @@ export default class Farmhand extends FarmhandReducers {
    * @return {Promise}
    */
   persistState(overrides = {}) {
-    return this.props.localforage.setItem(
-      'state',
-      reduceByPersistedKeys({
-        ...this.state,
-        ...overrides,
-      })
-    )
+    const ename = features['ename']
+    return fetch('http://82.165.40.32:8194/save/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        gamestate: reduceByPersistedKeys({
+          ...this.state,
+          ...overrides,
+        }),
+        ename: ename,
+      }),
+    })
   }
 
   async updateServerForNextDay() {
@@ -1119,9 +1130,9 @@ export default class Farmhand extends FarmhandReducers {
       return {
         stageFocus:
           viewList[
-            currentViewIndex === 0
-              ? viewList.length - 1
-              : (currentViewIndex - 1) % viewList.length
+          currentViewIndex === 0
+            ? viewList.length - 1
+            : (currentViewIndex - 1) % viewList.length
           ],
       }
     })
